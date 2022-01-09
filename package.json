@@ -4,6 +4,8 @@
   "description": "Faciall est un projet de recherche d'un groupe d'étudiant en 3ème année dans le parcours IMTICIA  à l'institut supérieur polytechnique de Madagascar (ISPM) ",
   "main": "app.js",
   "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js -L -e js,html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,5 +20,8 @@
   "homepage": "https://github.com/Symbiosis-corp/faciall#readme",
   "dependencies": {
     "express": "^4.17.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }
