@@ -1,63 +1,63 @@
+
+
 const video = document.getElementById("videoInput");
+const canvas = document.getElementById("canvas");
+const img = document.getElementById("img");
 
 Promise.all([
+    faceapi.nets.tinyFaceDetector.loadFromUri('./models'),
     faceapi.nets.faceRecognitionNet.loadFromUri("./models"),
     faceapi.nets.faceLandmark68Net.loadFromUri("./models"),
     faceapi.nets.ssdMobilenetv1.loadFromUri("./models"),
-]).then(start);
 
-function start (){
-    console.log("Done");
-    video.src="../videos/video2.mp4";
-    recognizeFaces();
+]).then(startVideo);
+
+function startVideo(){
+    console.log("loaded");
+    navigator.getUserMedia(
+        {video: {}},
+        stream => video.srcObject = stream,
+        err => console.error(err)
+    )
 }
 
-async function recognizeFaces(){
-    const labeledFaceDescriptors = await loadLabelImages();
-    const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
+video.addEventListener('play', ()=>{
+    console.log("playing");
+    setInterval(async ()=>{
+        const detections = await faceapi.detectAllFaces(video).withFaceLandmarks();
 
-    video.addEventListener("play",()=>{
-        console.log("playing");
+        //verification du nombre de visage
+        if(detections.length==0){
+            console.log("searching");
 
-        const canvas = faceapi.createCanvasFromMedia(video);
-        document.body.append(canvas);
+        }else if(detections.length==1){
+            console.log(detections);
+            extractFaceFromBox(video, detections[0].detection.box);
+            video.pause();
 
-        const displaySize = {width: video.width, height: video.height};
-        faceapi.matchDimensions(canvas, displaySize);
-
-        setInterval(async ()=>{
-            const detections = await faceapi.detectAllFaces(video).withFaceLandmarks().withFaceDescriptors();
+        }else{
+            console.log("Une personne à la fois");
             
-            const resizedDetections = faceapi.resizeResults(detections, displaySize);
-            canvas.getContext('2d').clearRect(0,0,canvas.width, canvas.height);
+        }
+    },5000);
+})
 
-            const results = resizedDetections.map((d) =>{
-                return faceMatcher.findBestMatch(d.descriptor);
-            });
 
-            results.forEach((result, i) => {
-                const box = resizedDetections[i].detection.box;
-                const drawBox = new faceapi.draw.DrawBox(box, {label: result.toString()});
-                drawBox.draw(canvas);
-            });
-        },10)
-    });
-} 
-
-function loadLabelImages(){
-    const labels = ['amy','bernadette','howard','leonard','penny','raj','sheldon','stuart']
-
-    return Promise.all(
-        labels.map(async (label)=>{
-            const descriptions = [];
-            for(let i=1; 3>=i; i++){
-                const img = await faceapi.fetchImage("../images/raj/1.png");
-                const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
-                descriptions.push(detections.descriptor)
-            }
-            console.log(label + 'faces loaded');
-            return new faceapi.LabeledFaceDescriptors(label, descriptions)
-        })
-    );
+// extracter une image depuis l'élément detection
+async function extractFaceFromBox(inputImage, box){ 
+    const regionsToExtract = [
+        new faceapi.Rect( box.x, box.y , box.width , box.height)
+    ];        
+    let faceImages = await faceapi.extractFaces(inputImage, regionsToExtract);
+    
+    if(faceImages.length == 0){
+        console.log('Face not found')
+    }
+    else
+    {
+        faceImages.forEach((cnv) => {
+            img.src = cnv.toDataURL();
+         });  
+    }   
 }
-//<>
+// //<>
