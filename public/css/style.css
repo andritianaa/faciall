@@ -8,7 +8,7 @@ body{
     align-items: center;
     flex-direction: column;
 }
-video, canvas{
+#camera, canvas{
     position: absolute;
     width: 720px;
     height: 550px;
