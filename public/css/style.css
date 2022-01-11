@@ -6,12 +6,27 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
 }
-#camera, canvas{
+.combo{
+    width: 100vw;
+    height: 90vw;
+    margin: 0;
+    padding: 0;
+    margin-left: 50px;
+}
+#camera, canvas,#result{
+    margin: 0;
+    padding: 0;
     position: absolute;
-    width: 720px;
-    height: 550px;
     top: 0;
-    left: 0;
+    transform: scaleX(-1);
+    
+}
+button{
+    position: absolute;
+    bottom: 0;
+    bottom: 0;
+}
+#retake{
+    display: none;
 }

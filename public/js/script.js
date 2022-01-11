@@ -1,6 +1,8 @@
-const video = document.getElementById("videoInput");
 const canvas = document.getElementById("canvas");
-const img = document.getElementById("img");
+const camera = document.getElementById("camera");
+const result = document.getElementById('result');
+const takeButton = document.getElementById('take');
+const retakeButton = document.getElementById('retake');
 
 Promise.all([
     faceapi.nets.tinyFaceDetector.loadFromUri('./models'),
@@ -8,54 +10,40 @@ Promise.all([
     faceapi.nets.faceLandmark68Net.loadFromUri("./models"),
     faceapi.nets.ssdMobilenetv1.loadFromUri("./models"),
 
-]).then(startVideo);
+]).then(start);
 
-function startVideo(){
-    console.log("loaded");
-    navigator.getUserMedia(
-        {video: {}},
-        stream => video.srcObject = stream,
-        err => console.error(err)
-    )
+function start(){
+    console.log("starting");
+    //take webcam
+    Webcam.set({
+        width: 888, // live preview size
+        height: 500,
+        dest_width: 888, // device capture size
+        dest_height: 500,
+        crop_width: 500, // final cropped size
+        crop_height: 500,
+        image_format:'jpeg',
+        jpeg_quality:90
+    });
+    Webcam.attach("#camera");
 }
 
-video.addEventListener('play', ()=>{
-    console.log("playing");
-    setInterval(async ()=>{
-        const detections = await faceapi.detectAllFaces(video).withFaceLandmarks();
-
-        //verification du nombre de visage
-        if(detections.length==0){
-            console.log("searching");
-
-        }else if(detections.length==1){
-            console.log(detections);
-            extractFaceFromBox(video, detections[0].detection.box);
-            video.pause();
-
-        }else{
-            console.log("Une personne à la fois");
-            
-        }
-    },5000);
-})
-
-
-// extracter une image depuis l'élément detection
-async function extractFaceFromBox(inputImage, box){ 
-    const regionsToExtract = [
-        new faceapi.Rect( box.x, box.y , box.width , box.height)
-    ];        
-    let faceImages = await faceapi.extractFaces(inputImage, regionsToExtract);
+function take(){
+    takeButton.style.display="none";
+    retakeButton.style.display="block";
+    Webcam.snap(function(data_uri){
+        document.getElementById('result').innerHTML = `
+            <img id="taken" src="${data_uri}"/>
+        `;
+        document.getElementById('taken').style.display="block";
+    })
+    console.log("captured");
+}
+function retake(){
+    takeButton.style.display="block";
+    retakeButton.style.display="none";
+    document.getElementById('taken').style.display="none";
     
-    if(faceImages.length == 0){
-        console.log('Face not found')
-    }
-    else
-    {
-        faceImages.forEach((cnv) => {
-            img.src = cnv.toDataURL();
-         });  
-    }   
+    console.log("retrying");
 }
-// //<>
+//<>

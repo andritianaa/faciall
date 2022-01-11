@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,12 +9,17 @@
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
+    <div class="combo">
+        <div id="camera"></div>
+        <canvas id="canvas" class="overlay"></canvas>
+        <div id="result"></div>
+        <button id="take" onclick="take()">Capturer</button>
+        <button id="retake" onclick="retake()">Recapturer</button>
+    </div>
 
-    <div id="camera"></div>
-    <canvas id="canvas" class="overlay"></canvas>
-
-    <img src="" alt="image" srcset="" id= "img">
-    <script defer async src="./js/face-api.js"></script>
-    <script defer async src="./js/script.js"></script>
+    <script src="./js/webcam.min.js"></script>
+    <script src="./js/face-api.js"></script>
+    <script src="./js/script.js"></script>
 </body>
+
 </html>
