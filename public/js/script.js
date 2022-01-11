@@ -1,5 +1,3 @@
-
-
 const video = document.getElementById("videoInput");
 const canvas = document.getElementById("canvas");
 const img = document.getElementById("img");
