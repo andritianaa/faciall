@@ -3,25 +3,6 @@ const canvas = document.getElementById("canvas");
 const img = document.getElementById("img");
 const camera = document.getElementById("camera");
 
-Promise.all([
-    faceapi.nets.tinyFaceDetector.loadFromUri('./models'),
-    faceapi.nets.faceRecognitionNet.loadFromUri("./models"),
-    faceapi.nets.faceLandmark68Net.loadFromUri("./models"),
-    faceapi.nets.ssdMobilenetv1.loadFromUri("./models"),
-
-]).then(start);
-
-function start(){
-    console.log("starting");
-    //take webcam
-    Webcam.set({
-        width:camera.offsetWidth,
-        height:camera.offsetHeight,
-        image_format:'jpeg',
-        jpeg_quality:90
-    });
-    Webcam.attach("#camera");
-}
 
 setInterval(async ()=>{
     const detections = await faceapi.detectAllFaces(camera).withFaceLandmarks();
