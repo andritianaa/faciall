@@ -1,3 +1,5 @@
+
+
 const canvas = document.getElementById("canvas");
 const camera = document.getElementById("camera");
 const result = document.getElementById('result');
