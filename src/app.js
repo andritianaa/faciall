@@ -1,50 +1,26 @@
-const fs         = require("fs");
-const path       = require('path');
-const canvas     = require("canvas");
-const multer     = require('multer');
-const express    = require('express');
-const faceapi    = require("face-api.js");
-const bodyParser = require('body-parser');
+let arr1 = [1,2,3];
 
-const app = express();
-const port = process.env.PORT || 3000;
+function doubler(arr, callback){
+    const newArr=[];
+    for(let i=0; arr.length>i; i++){
+        newArr.push(callback(arr[i]));
+    }
+    return newArr;
 
-const basePath = path.join(__dirname, '../public');
-app.use(express.static(basePath));
+}
 
+const t1 = [1,2,3];
+const t2 = [1,2,3];
 
-// // parse application/json
-// app.use(bodyParser.json());
+const compare = ((a,b) => a.length === b.length && a.every((v,i)=> v === b[i]))
+ 
+t1.every
 
-  
-
-// // image upload code using multer
-// var storage = multer.diskStorage({
-//    destination: function (req, file, cb) {
-//       cb(null, 'uploads');
-//    },
-//    filename: function (req, file, cb) {
-//       cb(null, Date.now() + '-' + file.originalname);
-//    }
-// });
-
-// var upload = multer({ storage: storage });
+console.log(compare(t1,t2));
 
 
-// app.post('/api/image-upload', upload.single('image'),(req, res) => {
-//   const image = req.image;
-//   res.send(apiResponse({message: 'File uploaded successfully.', image}));
-
-// });
-
-
-// function apiResponse(results){
-//     return JSON.stringify({"status": 200, "error": null, "response": results});
-// }
-
-// server listen 
-app.listen(port, () => {
-    console.log("server started on port "+port);
+arr1 = doubler(arr1,(val)=>{
+    return val*2;
 })
-
+console.log(arr1);
 //<>
