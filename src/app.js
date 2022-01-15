@@ -139,6 +139,7 @@ function apiResponse(results) {
 // server listen 
 app.listen(port, () => {
   console.log("server started on port " + port);
+  creatingDescriptorJSONfile();
 })
 
 
@@ -164,17 +165,17 @@ async function creatingDescriptorJSONfile() {
   //models chargés
   console.log("models chargés");
 
-  img = await canvas.loadImage(`public/images/andri.jpg`);
+  img = await canvas.loadImage(`public/faces/males/howard.jpg`);
   console.log("imgReference loaded");
 
   console.log("descripting");
   const imgDescriptor = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
   if (imgDescriptor) console.log("found face in imgDescriptor");
-  //io imgDescriptor io no atsofoka anaty base de donnée
 
+  //io imgDescriptor io no atsofoka anaty base de donnée
+  console.log(JSON.stringify(imgDescriptor));
 }
 
-start();
 
 
 
