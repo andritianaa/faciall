@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require('path');
+//canvas ampiasaina toy ny canvas amin'ny html fa anaty node
 const canvas = require("canvas");
 const multer = require('multer');
 const express = require('express');
@@ -40,59 +41,75 @@ var upload = multer({
 //return l'id de la personne trouvé
 app.post('/', upload.single('image'), (req, res) => {
   var image = req.image;
+
+  //monkey patch
   const {
     Canvas,
     Image,
     ImageData
   } = canvas;
-  faceapi.env.monkeyPatch({Canvas,Image,ImageData})
+  faceapi.env.monkeyPatch({
+    Canvas,
+    Image,
+    ImageData
+  })
 
   //declaration asynchrone de la reconnaissance faciale
   async function start() {
+
     //chargement des models
-    await faceapi.nets.faceRecognitionNet.loadFromDisk('public/models'),
-      await faceapi.nets.faceLandmark68Net.loadFromDisk('public/models'),
-      await faceapi.nets.ssdMobilenetv1.loadFromDisk('public/models'),
-      //models chargés
-      console.log("insertion image a rechercher: ", fileName);
-    console.log("loading image");
+    await faceapi.nets.faceRecognitionNet.loadFromDisk('public/models');
+    await faceapi.nets.faceLandmark68Net.loadFromDisk('public/models');
+    await faceapi.nets.ssdMobilenetv1.loadFromDisk('public/models');
+    //models chargés
+
+
+    console.log("nom de l'image: ", fileName);
+    console.log("chargement de l'image");
+
+    /**loading image in canvas
+     * face api mampiasa htmlImageElement na htmlVideoElement de ny fichier image tsotra atsofoka
+     * anaty canvas mba holasa htmlImageElement
+     */
     image = await canvas.loadImage(`uploads/${fileName}`);
-    console.log("image loaded / face matching");
-    const labeledFaceDescriptors = await loadLabeledImages();
-    console.log("face matching");
-    const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
-    console.log("faceMatcher done / detection");
-    const detections = await faceapi.detectAllFaces(image).withFaceLandmarks().withFaceDescriptors();
-    console.log("detected");
-    const results = detections.map(d => faceMatcher.findBestMatch(d.descriptor));
-    results.forEach((result, i) => {
-      console.log(`result ${result.toString()}`);
-    })
-    console.log("done");
+    console.log("image loaded");
+    imgReference = await canvas.loadImage(`public/images/andri.jpg`);
+    console.log("imgReference loaded");
+    
+    //image loaded
+
+
+    //alaina ny description facial an'ireo image
+    //image uploaded
+    console.log("descripting result");
+    const result = await faceapi.detectSingleFace(image).withFaceLandmarks().withFaceDescriptor();
+    if (result) console.log("found face in result");
+    //database image
+    console.log("descripting reference");
+    const reference = await faceapi.detectSingleFace(imgReference).withFaceLandmarks().withFaceDescriptor();
+    if (reference) console.log("found face in reference");
+
+
+    const faceMatcher = new faceapi.FaceMatcher(result);
+    console.log("facematcher result done");
+
+
+
+    console.log("reference true");
+    const bestMatch = faceMatcher.findBestMatch(reference.descriptor);
+    console.log("all done");
+
+    if(bestMatch._distance < 0.45){
+      console.log("Olona mitovy");
+    }else{
+      console.log("Olona samihafa");
+    }
+    console.log(bestMatch._distance);
   }
 
   start();
 
-  function loadLabeledImages() {
-    console.log("loadLabeledImages starting");
-    const labels = ["amy", "bernadette", "howard", "leonard", "penny", "raj", "sheldon", "stuart"];
-    return Promise.all(
-      labels.map(async label => {
-        const descriptions = []
-        for (let i = 1; i <= 1; i++) {
-          img =  canvas.loadImage(`public/images/${label}/${i}.png`);
-          console.log(img);
-          const detections =  faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor()
-          
-          descriptions.push(detections.descriptor);
-          console.log(detections);
-          console.log(`${label} ${i}`);
-        }
-        console.log(`${label} loaded`);
-        return new faceapi.LabeledFaceDescriptors(label, descriptions);
-      })
-    )
-  }
+
 
   res.send(apiResponse({
     message: fileName,
