@@ -56,13 +56,11 @@ app.post('/', upload.single('image'), (req, res) => {
 
   //declaration asynchrone de la reconnaissance faciale
   async function start() {
-
     //chargement des models
     await faceapi.nets.faceRecognitionNet.loadFromDisk('public/models');
     await faceapi.nets.faceLandmark68Net.loadFromDisk('public/models');
     await faceapi.nets.ssdMobilenetv1.loadFromDisk('public/models');
     //models chargés
-
 
     console.log("nom de l'image: ", fileName);
     console.log("chargement de l'image");
@@ -73,18 +71,18 @@ app.post('/', upload.single('image'), (req, res) => {
      */
     newImage = await canvas.loadImage(`uploads/${fileName}`);
     console.log("newImage loaded");
-    
+
     //fafana ity rehefa tafavoaka ilay stockage an'ny resultat de calcul anaty static
     imgReference = await canvas.loadImage(`public/images/andri.jpg`);
     console.log("imgReference loaded");
-    
+
     /**
      * calculena ny description faciale an'ireo image
      * mamoaka objet js izay hocomparena avy eo ilay calcul
      * raha mahita tarehy de mitohy
      * raha tsy mahita de throw error (to do)
      */
-    
+
     console.log("descripting newInput");
     const newInput = await faceapi.detectSingleFace(newImage).withFaceLandmarks().withFaceDescriptor();
     if (newInput) console.log("found face in newInput");
@@ -106,14 +104,14 @@ app.post('/', upload.single('image'), (req, res) => {
      * mila asina tarehy maro ao anaty base amizay mba miena ny probabilité d'erreur
      * raha tsy misy tarehy 0.4 ao amin'ny base dia raisina ho inconnu ilay input dia miverina mandefa sary na manao enregistrement
      * raha misy 0.25 kosa nefa tonga dia mijanona ny recherche fa efa tena assuré hoe olona ray ihany ny amin'ny sary anakiroa
-    */
+     */
     const bestMatch = faceMatcher.findBestMatch(reference.descriptor);
     console.log("all done");
 
     //test comparaison olona roa
-    if(bestMatch._distance < 0.45){
+    if (bestMatch._distance < 0.45) {
       console.log("Olona mitovy");
-    }else{
+    } else {
       console.log("Olona samihafa");
     }
     console.log(bestMatch._distance);
@@ -142,5 +140,42 @@ function apiResponse(results) {
 app.listen(port, () => {
   console.log("server started on port " + port);
 })
+
+
+
+//declaration asynchrone de la reconnaissance faciale
+async function creatingDescriptorJSONfile() {
+
+  //monkey patch
+  const {
+    Canvas,
+    Image,
+    ImageData
+  } = canvas;
+  faceapi.env.monkeyPatch({
+    Canvas,
+    Image,
+    ImageData
+  })
+  //chargement des models
+  await faceapi.nets.faceRecognitionNet.loadFromDisk('public/models');
+  await faceapi.nets.faceLandmark68Net.loadFromDisk('public/models');
+  await faceapi.nets.ssdMobilenetv1.loadFromDisk('public/models');
+  //models chargés
+  console.log("models chargés");
+
+  img = await canvas.loadImage(`public/images/andri.jpg`);
+  console.log("imgReference loaded");
+
+  console.log("descripting");
+  const imgDescriptor = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+  if (imgDescriptor) console.log("found face in imgDescriptor");
+  //io imgDescriptor io no atsofoka anaty base de donnée
+
+}
+
+start();
+
+
 
 //<>
