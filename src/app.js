@@ -4,8 +4,8 @@ const path = require('path');
 const canvas = require("canvas");
 const multer = require('multer');
 const express = require('express');
-const bodyParser = require('body-parser');
 const faceapi = require("face-api.js");
+const bodyParser = require('body-parser');
 
 
 //definition glogal fileName
@@ -71,34 +71,46 @@ app.post('/', upload.single('image'), (req, res) => {
      * face api mampiasa htmlImageElement na htmlVideoElement de ny fichier image tsotra atsofoka
      * anaty canvas mba holasa htmlImageElement
      */
-    image = await canvas.loadImage(`uploads/${fileName}`);
-    console.log("image loaded");
+    newImage = await canvas.loadImage(`uploads/${fileName}`);
+    console.log("newImage loaded");
+    
+    //fafana ity rehefa tafavoaka ilay stockage an'ny resultat de calcul anaty static
     imgReference = await canvas.loadImage(`public/images/andri.jpg`);
     console.log("imgReference loaded");
     
-    //image loaded
+    /**
+     * calculena ny description faciale an'ireo image
+     * mamoaka objet js izay hocomparena avy eo ilay calcul
+     * raha mahita tarehy de mitohy
+     * raha tsy mahita de throw error (to do)
+     */
+    
+    console.log("descripting newInput");
+    const newInput = await faceapi.detectSingleFace(newImage).withFaceLandmarks().withFaceDescriptor();
+    if (newInput) console.log("found face in newInput");
 
-
-    //alaina ny description facial an'ireo image
-    //image uploaded
-    console.log("descripting result");
-    const result = await faceapi.detectSingleFace(image).withFaceLandmarks().withFaceDescriptor();
-    if (result) console.log("found face in result");
-    //database image
     console.log("descripting reference");
     const reference = await faceapi.detectSingleFace(imgReference).withFaceLandmarks().withFaceDescriptor();
     if (reference) console.log("found face in reference");
 
+    //amoronana faceMatcher ilay tarehy itadiavana ny tompony
+    const faceMatcher = new faceapi.FaceMatcher(newInput);
+    console.log("facematcher newInput done");
 
-    const faceMatcher = new faceapi.FaceMatcher(result);
-    console.log("facematcher result done");
-
-
-
-    console.log("reference true");
+    /**
+     * tadiavina amin'ny alalan'ny methode findBestMatch() ananan'ny objet faceMatcher
+     * mamoaka _distance io methode io entre 0 et 1
+     * plus manakaiky ny 0 plus mitovy ireo tarehy anakiroa
+     * plus manakaiky ny 1 plus tsy mitovy
+     * eo amin'ny 0.3 sy 0.4 eo hoeo ny distance Euclidien amin'ny tarehy mitovy fa sary samihafa
+     * mila asina tarehy maro ao anaty base amizay mba miena ny probabilité d'erreur
+     * raha tsy misy tarehy 0.4 ao amin'ny base dia raisina ho inconnu ilay input dia miverina mandefa sary na manao enregistrement
+     * raha misy 0.25 kosa nefa tonga dia mijanona ny recherche fa efa tena assuré hoe olona ray ihany ny amin'ny sary anakiroa
+    */
     const bestMatch = faceMatcher.findBestMatch(reference.descriptor);
     console.log("all done");
 
+    //test comparaison olona roa
     if(bestMatch._distance < 0.45){
       console.log("Olona mitovy");
     }else{
