@@ -15,7 +15,6 @@ var fileName = 'test';
 //init express
 const app = express();
 const port = process.env.PORT || 3000;
-
 const basePath = path.join(__dirname, '../public');
 app.use(express.static(basePath));
 
@@ -69,12 +68,6 @@ app.post('/', upload.single('image'), (req, res) => {
      * face api mampiasa htmlImageElement na htmlVideoElement de ny fichier image tsotra atsofoka
      * anaty canvas mba holasa htmlImageElement
      */
-    newImage = await canvas.loadImage(`uploads/${fileName}`);
-    console.log("newImage loaded");
-
-    //fafana ity rehefa tafavoaka ilay stockage an'ny resultat de calcul anaty static
-    imgReference = await canvas.loadImage(`public/images/andri.jpg`);
-    console.log("imgReference loaded");
 
     /**
      * calculena ny description faciale an'ireo image
@@ -82,14 +75,25 @@ app.post('/', upload.single('image'), (req, res) => {
      * raha mahita tarehy de mitohy
      * raha tsy mahita de throw error (to do)
      */
-
-    console.log("descripting newInput");
+    console.log("newInput descripting");
+    newImage = await canvas.loadImage(`uploads/${fileName}`);
     const newInput = await faceapi.detectSingleFace(newImage).withFaceLandmarks().withFaceDescriptor();
     if (newInput) console.log("found face in newInput");
+    else console.log("no face found in newInput");
 
-    console.log("descripting reference");
+    //fafana ity rehefa tafavoaka ilay stockage an'ny resultat de calcul anaty static
+    imgReference = await canvas.loadImage(`public/faces/females/rasta.jpg`);
     const reference = await faceapi.detectSingleFace(imgReference).withFaceLandmarks().withFaceDescriptor();
-    if (reference) console.log("found face in reference");
+    if (newInput) console.log("found face in reference");
+    else console.log("no face found in reference");
+
+
+    // let filePath = './public/faces/females/rastaParse.json';
+    // let data = fs.readFileSync(filePath, (err, data) => {
+    //   if (err) throw err;
+    // });
+    // let reference = JSON.parse(data);
+    // if (reference) console.log("found face in reference");
 
     //amoronana faceMatcher ilay tarehy itadiavana ny tompony
     const faceMatcher = new faceapi.FaceMatcher(newInput);
@@ -119,8 +123,6 @@ app.post('/', upload.single('image'), (req, res) => {
 
   start();
 
-
-
   res.send(apiResponse({
     message: fileName,
     image
@@ -139,12 +141,11 @@ function apiResponse(results) {
 // server listen 
 app.listen(port, () => {
   console.log("server started on port " + port);
-  creatingDescriptorJSONfile();
+  //creatingDescriptorJSONfile();
 })
 
 
-
-//declaration asynchrone de la reconnaissance faciale
+//fonction mamadika image descriptor ho lasa JSON
 async function creatingDescriptorJSONfile() {
 
   //monkey patch
@@ -165,18 +166,18 @@ async function creatingDescriptorJSONfile() {
   //models chargés
   console.log("models chargés");
 
-  img = await canvas.loadImage(`public/faces/males/howard.jpg`);
+
+  img = await canvas.loadImage(`public/faces/females/rasta.jpg`);
   console.log("imgReference loaded");
 
   console.log("descripting");
   const imgDescriptor = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
-  if (imgDescriptor) console.log("found face in imgDescriptor");
-
   //io imgDescriptor io no atsofoka anaty base de donnée
-  console.log(JSON.stringify(imgDescriptor));
+  if (imgDescriptor) console.log("found face in imgDescriptor");
+  console.log(imgDescriptor);
+  //creation fichier json
+  fs.writeFile("./public/faces/females/rasta.json", JSON.stringify(imgDescriptor), () => console.log("file writed"));
 }
-
-
 
 
 //<>
