@@ -176,7 +176,7 @@ async function creatingDescriptorJSONfile() {
   if (imgDescriptor) console.log("found face in imgDescriptor");
   console.log(imgDescriptor);
   //creation fichier json
-  fs.writeFile("./public/faces/females/rasta.json", JSON.stringify(imgDescriptor), () => console.log("file writed"));
+  fs.writeFile("./public/faces/females/rasta.json", JSON.stringify(imgDescriptor.descriptor), () => console.log("file writed"));
 }
 
 
