@@ -82,18 +82,19 @@ app.post('/', upload.single('image'), (req, res) => {
     else console.log("no face found in newInput");
 
     //fafana ity rehefa tafavoaka ilay stockage an'ny resultat de calcul anaty static
-    imgReference = await canvas.loadImage(`public/faces/females/rasta.jpg`);
-    const reference = await faceapi.detectSingleFace(imgReference).withFaceLandmarks().withFaceDescriptor();
-    if (newInput) console.log("found face in reference");
-    else console.log("no face found in reference");
+    //imgReference = await canvas.loadImage(`public/faces/females/rasta.jpg`);
+    //const reference = await faceapi.detectSingleFace(imgReference).withFaceLandmarks().withFaceDescriptor();
+    //if (newInput) console.log("found face in reference");
+    //else console.log("no face found in reference");
 
 
-    // let filePath = './public/faces/females/rastaParse.json';
-    // let data = fs.readFileSync(filePath, (err, data) => {
-    //   if (err) throw err;
-    // });
-    // let reference = JSON.parse(data);
-    // if (reference) console.log("found face in reference");
+     let filePath = './public/faces/females/rasta.json';
+     let reference = fs.readFileSync(filePath, (err, data) => {
+       if (err) throw err;
+     });
+     console.log(reference);
+     if (reference) console.log("found face in reference");
+     console.log(newInput.descriptor);
 
     //amoronana faceMatcher ilay tarehy itadiavana ny tompony
     const faceMatcher = new faceapi.FaceMatcher(newInput);
@@ -109,7 +110,7 @@ app.post('/', upload.single('image'), (req, res) => {
      * raha tsy misy tarehy 0.4 ao amin'ny base dia raisina ho inconnu ilay input dia miverina mandefa sary na manao enregistrement
      * raha misy 0.25 kosa nefa tonga dia mijanona ny recherche fa efa tena assuré hoe olona ray ihany ny amin'ny sary anakiroa
      */
-    const bestMatch = faceMatcher.findBestMatch(reference.descriptor);
+    const bestMatch = faceMatcher.findBestMatch(reference);
     console.log("all done");
 
     //test comparaison olona roa
@@ -147,7 +148,7 @@ app.listen(port, () => {
 
 //fonction mamadika image descriptor ho lasa JSON
 async function creatingDescriptorJSONfile() {
-
+  console.log("GO");
   //monkey patch
   const {
     Canvas,
