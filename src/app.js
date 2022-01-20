@@ -1,4 +1,4 @@
-const fs = require("fs");
+const fs = require('fs');
 const path = require('path');
 //canvas ampiasaina toy ny canvas amin'ny html fa anaty node
 const canvas = require("canvas");
@@ -6,7 +6,6 @@ const multer = require('multer');
 const express = require('express');
 const faceapi = require("face-api.js");
 const bodyParser = require('body-parser');
-
 
 //definition glogal fileName
 //fileName est utilisé pour récuperer le nom du fichier uploadé, ici une image
@@ -63,6 +62,7 @@ app.post('/', upload.single('image'), (req, res) => {
 
     console.log("nom de l'image: ", fileName);
     console.log("chargement de l'image");
+
 
     /**loading image in canvas
      * face api mampiasa htmlImageElement na htmlVideoElement de ny fichier image tsotra atsofoka
