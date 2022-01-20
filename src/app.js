@@ -42,9 +42,8 @@ var upload = multer({
 app.post('/', upload.single('image'), (req, res) => {
   var image = req.image;
 
-  //monkey patch
-  
-
+  resultat = compareFace.compareImageJSON(`uploads/${fileName}`,'./public/faces/test/howard.json');
+  console.log(resultat);
   res.send(apiResponse({
     message: fileName,
     image
@@ -62,7 +61,6 @@ function apiResponse(results) {
 // server listen 
 app.listen(port, () => {
   console.log("server started on port " + port);
-  //creatingDescriptorJSONfile();
 })
 
 //<>
