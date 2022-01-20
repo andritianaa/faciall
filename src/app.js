@@ -6,6 +6,8 @@ const multer = require('multer');
 const express = require('express');
 const faceapi = require("face-api.js");
 const bodyParser = require('body-parser');
+const compareFace = require('./facial_recognition/compareFace.js');
+const createDescriptorFile = require('./facial_recognition/createDescriptorFile.js');
 
 //definition glogal fileName
 //fileName est utilisé pour récuperer le nom du fichier uploadé, ici une image
@@ -41,95 +43,13 @@ app.post('/', upload.single('image'), (req, res) => {
   var image = req.image;
 
   //monkey patch
-  const {
-    Canvas,
-    Image,
-    ImageData
-  } = canvas;
-  faceapi.env.monkeyPatch({
-    Canvas,
-    Image,
-    ImageData
-  })
-
-  //declaration asynchrone de la reconnaissance faciale
-  async function start() {
-    //chargement des models
-    await faceapi.nets.faceRecognitionNet.loadFromDisk('public/models');
-    await faceapi.nets.faceLandmark68Net.loadFromDisk('public/models');
-    await faceapi.nets.ssdMobilenetv1.loadFromDisk('public/models');
-    //models chargés
-
-    console.log("nom de l'image: ", fileName);
-    console.log("chargement de l'image");
-
-
-    /**loading image in canvas
-     * face api mampiasa htmlImageElement na htmlVideoElement de ny fichier image tsotra atsofoka
-     * anaty canvas mba holasa htmlImageElement
-     */
-
-    /**
-     * calculena ny description faciale an'ireo image
-     * mamoaka objet js izay hocomparena avy eo ilay calcul
-     * raha mahita tarehy de mitohy
-     * raha tsy mahita de throw error (to do)
-     */
-    console.log("newInput descripting");
-    newImage = await canvas.loadImage(`uploads/${fileName}`);
-    const newInput = await faceapi.detectSingleFace(newImage).withFaceLandmarks().withFaceDescriptor();
-    if (newInput) console.log("found face in newInput");
-    else console.log("no face found in newInput");
-
-    //fafana ity rehefa tafavoaka ilay stockage an'ny resultat de calcul anaty static
-    //imgReference = await canvas.loadImage(`public/faces/females/rasta.jpg`);
-    //const reference = await faceapi.detectSingleFace(imgReference).withFaceLandmarks().withFaceDescriptor();
-    //if (newInput) console.log("found face in reference");
-    //else console.log("no face found in reference");
-
-
-     let filePath = './public/faces/females/rasta.json';
-     let reference = fs.readFileSync(filePath, (err, data) => {
-       if (err) throw err;
-     });
-     console.log(reference);
-     if (reference) console.log("found face in reference");
-     console.log(newInput.descriptor);
-
-    //amoronana faceMatcher ilay tarehy itadiavana ny tompony
-    const faceMatcher = new faceapi.FaceMatcher(newInput);
-    console.log("facematcher newInput done");
-
-    /**
-     * tadiavina amin'ny alalan'ny methode findBestMatch() ananan'ny objet faceMatcher
-     * mamoaka _distance io methode io entre 0 et 1
-     * plus manakaiky ny 0 plus mitovy ireo tarehy anakiroa
-     * plus manakaiky ny 1 plus tsy mitovy
-     * eo amin'ny 0.3 sy 0.4 eo hoeo ny distance Euclidien amin'ny tarehy mitovy fa sary samihafa
-     * mila asina tarehy maro ao anaty base amizay mba miena ny probabilité d'erreur
-     * raha tsy misy tarehy 0.4 ao amin'ny base dia raisina ho inconnu ilay input dia miverina mandefa sary na manao enregistrement
-     * raha misy 0.25 kosa nefa tonga dia mijanona ny recherche fa efa tena assuré hoe olona ray ihany ny amin'ny sary anakiroa
-     */
-    const bestMatch = faceMatcher.findBestMatch(reference);
-    console.log("all done");
-
-    //test comparaison olona roa
-    if (bestMatch._distance < 0.45) {
-      console.log("Olona mitovy");
-    } else {
-      console.log("Olona samihafa");
-    }
-    console.log(bestMatch._distance);
-  }
-
-  start();
+  
 
   res.send(apiResponse({
     message: fileName,
     image
   }));
 });
-
 
 function apiResponse(results) {
   return JSON.stringify({
@@ -144,8 +64,5 @@ app.listen(port, () => {
   console.log("server started on port " + port);
   //creatingDescriptorJSONfile();
 })
-
-
-
 
 //<>
