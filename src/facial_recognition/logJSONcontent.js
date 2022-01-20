@@ -2,7 +2,7 @@ const fs = require('fs');
 const { parse } = require('path');
 
 let filePath = './public/faces/test/howard.json';
-async function logJSON(filePath){
+module.exports = async function logJSON(filePath){
     let file = fs.readFileSync(filePath, (err, data) => {
         if (err) throw err;
     });
