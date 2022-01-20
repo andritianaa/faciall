@@ -14,7 +14,7 @@ faceapi.env.monkeyPatch({
 })
 
 //declaration asynchrone de la reconnaissance faciale
-module.exports = async function compareImageJSON(pathFaceToSearch, pathReference) {
+async function compareImageJSON(pathFaceToSearch, pathReference) {
     //chargement des models
     console.log("Loading models");
     await faceapi.nets.faceRecognitionNet.loadFromDisk('public/models');
@@ -48,7 +48,7 @@ module.exports = async function compareImageJSON(pathFaceToSearch, pathReference
     });
     let parsedFile = JSON.parse(reference);
     //object.values no alaina satria Array ilay descriptor fa tsy objet
-    reference =  Object.values(parsedFile);
+    reference = Object.values(parsedFile);
 
     //amoronana faceMatcher ilay tarehy itadiavana ny tompony
     const faceMatcher = new faceapi.FaceMatcher(faceToSearch);
@@ -67,33 +67,33 @@ module.exports = async function compareImageJSON(pathFaceToSearch, pathReference
      * mampiasa min max izany
      */
     const bestMatch = faceMatcher.findBestMatch(reference);
-    console.log("\n\n Matching done\nResults : ");
+    console.log("\nMatching done ");
 
     //resultats
     if (bestMatch._distance < 0.45) {
-        console.log("Olona mitovy");
-    } else if(bestMatch.distance > 0.45) {
-        console.log("Olona samihafa ");
-    }else{
+        console.log("\nResults : Olona mitovy");
+    } else if (bestMatch.distance > 0.45) {
+        console.log("\nResults : Olona samihafa ");
+    } else {
         console.log("Sary mitovy");
     }
-    console.log(bestMatch._distance);
+    console.log(`Distance euclidienne : ${bestMatch._distance}`);
     return bestMatch._distance;
 }
-module.exports = async function compareJSONJSON(pathFaceToSearch, pathReference) {
+async function compareJSONJSON(pathFaceToSearch, pathReference) {
 
 
     let faceToSearch = fs.readFileSync(pathFaceToSearch, (err, data) => {
         if (err) throw err;
     });
     let parsedFaceToSearch = JSON.parse(faceToSearch);
-    faceToSearch =  Object.values(parsedFaceToSearch);
+    faceToSearch = Object.values(parsedFaceToSearch);
 
     let reference = fs.readFileSync(pathReference, (err, data) => {
         if (err) throw err;
     });
     let parsedFile = JSON.parse(reference);
-    reference =  Object.values(parsedFile);
+    reference = Object.values(parsedFile);
 
     //amoronana faceMatcher ilay tarehy itadiavana ny tompony
     const faceMatcher = new faceapi.FaceMatcher(faceToSearch);
@@ -109,17 +109,21 @@ module.exports = async function compareJSONJSON(pathFaceToSearch, pathReference)
      * raha misy 0.25 kosa nefa tonga dia mijanona ny recherche fa efa tena assuré hoe olona ray ihany ny amin'ny sary anakiroa
      */
     const bestMatch = faceMatcher.findBestMatch(reference);
-    console.log("all done");
+    console.log("\nMatching done ");
 
-    //test comparaison olona roa
+    //resultats
     if (bestMatch._distance < 0.45) {
-        console.log("Olona mitovy");
-    } else if(bestMatch.distance > 0.45) {
-        console.log("Olona samihafa ");
-    }else{
+        console.log("\nResults : Olona mitovy");
+    } else if (bestMatch.distance > 0.45) {
+        console.log("\nResults : Olona samihafa ");
+    } else {
         console.log("Sary mitovy");
     }
-    console.log(bestMatch._distance);
+    console.log(`Distance euclidienne : ${bestMatch._distance}`);
     return bestMatch._distance;
 }
+//compareImageJSON('public/faces/test/howard.jpg','./public/faces/test/howard.json');
 //<>
+
+module.exports.compareImageJSON = compareImageJSON;
+module.exports.compareJSONJSON = compareJSONJSON;

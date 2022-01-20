@@ -1,7 +1,7 @@
 const canvas = require("canvas");
 const faceapi = require("face-api.js");
 const fs = require("fs");
-module.exports = async function createDescriptorFile(pathSrc, pathDest) {
+async function createDescriptorFile(pathSrc, pathDest) {
     console.log("GO");
     //monkey patch
     const {
@@ -35,4 +35,6 @@ module.exports = async function createDescriptorFile(pathSrc, pathDest) {
     //creation fichier json
     fs.writeFile(pathDest, JSON.stringify(imgDescriptor.descriptor), () => console.log("file writed"));
   }
-  createDescriptorFile('./public/faces/test/howard.jpg','./public/faces/test/howard.json')
+  // createDescriptorFile('./public/faces/test/howard.jpg','./public/faces/test/howard.json')
+
+  module.exports.createDescriptorFile = createDescriptorFile;
