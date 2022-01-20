@@ -1,7 +1,7 @@
 const canvas = require("canvas");
 const faceapi = require("face-api.js");
 const fs = require("fs");
-async function createDescriptorFile(pathSrc, pathDest) {
+module.exports = async function createDescriptorFile(pathSrc, pathDest) {
     console.log("GO");
     //monkey patch
     const {
