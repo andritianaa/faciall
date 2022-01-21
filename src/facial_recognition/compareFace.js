@@ -2,6 +2,14 @@ const fs = require("fs");
 const canvas = require("canvas");
 const faceapi = require("face-api.js");
 
+//chargement des models
+console.log("Loading models");
+await faceapi.nets.faceRecognitionNet.loadFromDisk('src/facial_recognition/models');
+await faceapi.nets.faceLandmark68Net.loadFromDisk('src/facial_recognition/models');
+await faceapi.nets.ssdMobilenetv1.loadFromDisk('src/facial_recognition/models');
+console.log("Models loaded");
+//models chargés
+
 const {
     Canvas,
     Image,
@@ -15,13 +23,7 @@ faceapi.env.monkeyPatch({
 
 //declaration asynchrone de la reconnaissance faciale
 async function compareImageJSON(pathFaceToSearch, pathReference) {
-    //chargement des models
-    console.log("Loading models");
-    await faceapi.nets.faceRecognitionNet.loadFromDisk('src/facial_recognition/models');
-    await faceapi.nets.faceLandmark68Net.loadFromDisk('src/facial_recognition/models');
-    await faceapi.nets.ssdMobilenetv1.loadFromDisk('src/facial_recognition/models');
-    console.log("Models loaded");
-    //models chargés
+    
 
     /**loading image in canvas
      * face api mampiasa htmlImageElement na htmlVideoElement de ny fichier image tsotra atsofoka
@@ -121,6 +123,18 @@ async function compareJSONJSON(pathFaceToSearch, pathReference) {
     }
     console.log(`Distance euclidienne : ${bestMatch._distance}`);
     return bestMatch._distance;
+}
+
+async function searchPerson(pathFaceToSearch){
+    
+    console.log("Loading image");
+    newImage = await canvas.loadImage(pathFaceToSearch);
+    console.log("Image loaded\n");
+
+    console.log("Descripting faceToSearch");
+    const faceToSearch = await faceapi.detectSingleFace(newImage).withFaceLandmarks().withFaceDescriptor();
+    if (faceToSearch) console.log("faceToSearch has face");
+    else console.log("No face found in faceToSearch");
 }
 //compareImageJSON('public/faces/test/howard.jpg','./public/faces/test/howard.json');
 //<>
