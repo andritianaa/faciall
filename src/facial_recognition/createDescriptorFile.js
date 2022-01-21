@@ -15,9 +15,9 @@ async function createDescriptorFile(pathSrc, pathDest) {
       ImageData
     })
     //chargement des models
-    await faceapi.nets.faceRecognitionNet.loadFromDisk('public/models');
-    await faceapi.nets.faceLandmark68Net.loadFromDisk('public/models');
-    await faceapi.nets.ssdMobilenetv1.loadFromDisk('public/models');
+    await faceapi.nets.faceRecognitionNet.loadFromDisk('src/facial_recognition/models');
+    await faceapi.nets.faceLandmark68Net.loadFromDisk('src/facial_recognition/models');
+    await faceapi.nets.ssdMobilenetv1.loadFromDisk('src/facial_recognition/models');
 
     //models chargés
     console.log("models chargés");
