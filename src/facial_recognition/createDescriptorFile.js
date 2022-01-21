@@ -60,6 +60,7 @@ async function description(pathSrc) {
     Image,
     ImageData
   })
+  console.log("importing");
   //chargement des models
   var importModelStart = performance.now();
   await faceapi.nets.faceRecognitionNet.loadFromDisk('src/facial_recognition/models');
@@ -85,5 +86,6 @@ async function description(pathSrc) {
   return imgDescriptor;
 }
 // createDescriptorFile('./public/faces/test/howard.jpg','./public/faces/test/howard.json')
-description('./public/faces/test/howard.jpg');
+//description('./public/faces/test/howard.jpg');
 module.exports.createDescriptorFile = createDescriptorFile;
+module.exports.description = description;
