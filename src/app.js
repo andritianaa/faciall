@@ -6,12 +6,10 @@ const multer = require('multer');
 const express = require('express');
 const faceapi = require("face-api.js");
 const bodyParser = require('body-parser');
+const search = require('./facial_recognition/search.js');
 const compareFace = require('./facial_recognition/compareFace.js');
 const descriptorFile = require('./facial_recognition/createDescriptorFile.js');
 
-//definition glogal fileName
-//fileName est utilisé pour récuperer le nom du fichier uploadé, ici une image
-var fileName = 'test';
 
 //init express
 const app = express();
@@ -45,30 +43,12 @@ app.post('/', upload.single('image'), (req, res) => {
     imgDescriptor = await descriptorFile.description(`uploads/${fileName}`);
     imgDescriptor = await imgDescriptor.descriptor;
     genre = imgDescriptor.genre;
-    let found = false;
-    let id = 1;
-    let folderPath;
-    while (!found) {
-      for (let i = 1; i <= 3; i++) {
-        referencePath = `./public/faces/${genre}/${id}/${i}.json`
-        let compareResult = compareFace.compareObjectJSON(imgDescriptor, referencePath);
-
-        //resultats
-        if (compareResult < 0.45) {
-          console.log("\nResults : Olona mitovy");
-          found = true;
-        } else if (compareResult > 0.45) {
-          console.log("\nResults : Olona samihafa ");
-        } else {
-          console.log("Sary mitovy");
-          found = true;
-        }
-      }
-
-      id++;
+    searchResult = search(imgDescriptor);
+    if(searchResult == 0){
+      console.log("Personne inconnue");
+    }else{
+      console.log(`ID trouvé: ${searchResult}`);
     }
-    //ity id ity tadiavina ary amin'ny database
-    faceOwner = id;
 
     res.send(apiResponse({
       message: fileName,
