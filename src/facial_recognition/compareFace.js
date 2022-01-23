@@ -2,13 +2,7 @@ const fs = require("fs");
 const canvas = require("canvas");
 const faceapi = require("face-api.js");
 
-//chargement des models
-console.log("Loading models");
-await faceapi.nets.faceRecognitionNet.loadFromDisk('src/facial_recognition/models');
-await faceapi.nets.faceLandmark68Net.loadFromDisk('src/facial_recognition/models');
-await faceapi.nets.ssdMobilenetv1.loadFromDisk('src/facial_recognition/models');
-console.log("Models loaded");
-//models chargés
+
 
 const {
     Canvas,
@@ -23,7 +17,13 @@ faceapi.env.monkeyPatch({
 
 //declaration asynchrone de la reconnaissance faciale
 async function compareImageJSON(pathFaceToSearch, pathReference) {
-    
+    //chargement des models
+    console.log("Loading models");
+    await faceapi.nets.faceRecognitionNet.loadFromDisk('src/facial_recognition/models');
+    await faceapi.nets.faceLandmark68Net.loadFromDisk('src/facial_recognition/models');
+    await faceapi.nets.ssdMobilenetv1.loadFromDisk('src/facial_recognition/models');
+    console.log("Models loaded");
+    //models chargés
 
     /**loading image in canvas
      * face api mampiasa htmlImageElement na htmlVideoElement de ny fichier image tsotra atsofoka
@@ -124,9 +124,50 @@ async function compareJSONJSON(pathFaceToSearch, pathReference) {
     console.log(`Distance euclidienne : ${bestMatch._distance}`);
     return bestMatch._distance;
 }
+async function compareObjectJSON(objectJS, pathReference) {
+    let reference = fs.readFileSync(pathReference, (err, data) => {
+        if (err) throw err;
+    });
+    let parsedFile = JSON.parse(reference);
+    reference = Object.values(parsedFile);
 
-async function searchPerson(pathFaceToSearch){
-    
+    //amoronana faceMatcher ilay tarehy itadiavana ny tompony
+    const faceMatcher = new faceapi.FaceMatcher(objectJS);
+
+    /**
+     * tadiavina amin'ny alalan'ny methode findBestMatch() ananan'ny objet faceMatcher
+     * mamoaka _distance io methode io entre 0 et 1
+     * plus manakaiky ny 0 plus mitovy ireo tarehy anakiroa
+     * plus manakaiky ny 1 plus tsy mitovy
+     * eo amin'ny 0.3 sy 0.4 eo hoeo ny distance Euclidien amin'ny tarehy mitovy fa sary samihafa
+     * mila asina tarehy maro ao anaty base amizay mba miena ny probabilité d'erreur
+     * raha tsy misy tarehy 0.4 ao amin'ny base dia raisina ho inconnu ilay input dia miverina mandefa sary na manao enregistrement
+     * raha misy 0.25 kosa nefa tonga dia mijanona ny recherche fa efa tena assuré hoe olona ray ihany ny amin'ny sary anakiroa
+     */
+    const bestMatch = faceMatcher.findBestMatch(reference);
+    console.log("\nMatching done ");
+
+    //resultats
+    if (bestMatch._distance < 0.45) {
+        console.log("\nResults : Olona mitovy");
+    } else if (bestMatch.distance > 0.45) {
+        console.log("\nResults : Olona samihafa ");
+    } else {
+        console.log("Sary mitovy");
+    }
+    console.log(`Distance euclidienne : ${bestMatch._distance}`);
+    return bestMatch._distance;
+}
+
+
+async function searchPerson(pathFaceToSearch) {
+    //chargement des models
+    console.log("Loading models");
+    await faceapi.nets.faceRecognitionNet.loadFromDisk('src/facial_recognition/models');
+    await faceapi.nets.faceLandmark68Net.loadFromDisk('src/facial_recognition/models');
+    await faceapi.nets.ssdMobilenetv1.loadFromDisk('src/facial_recognition/models');
+    console.log("Models loaded");
+    //models chargés
     console.log("Loading image");
     newImage = await canvas.loadImage(pathFaceToSearch);
     console.log("Image loaded\n");
@@ -141,3 +182,4 @@ async function searchPerson(pathFaceToSearch){
 
 module.exports.compareImageJSON = compareImageJSON;
 module.exports.compareJSONJSON = compareJSONJSON;
+module.exports.compareObjectJSON = compareObjectJSON;
