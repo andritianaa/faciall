@@ -6,12 +6,10 @@ const multer = require('multer');
 const express = require('express');
 const faceapi = require("face-api.js");
 const bodyParser = require('body-parser');
+const search = require('./facial_recognition/search.js');
 const compareFace = require('./facial_recognition/compareFace.js');
-const createDescriptorFile = require('./facial_recognition/createDescriptorFile.js');
+const descriptorFile = require('./facial_recognition/createDescriptorFile.js');
 
-//definition glogal fileName
-//fileName est utilisé pour récuperer le nom du fichier uploadé, ici une image
-var fileName = 'test';
 
 //init express
 const app = express();
@@ -41,13 +39,24 @@ var upload = multer({
 //return l'id de la personne trouvé
 app.post('/', upload.single('image'), (req, res) => {
   var image = req.image;
+  async function desc() {
+    imgDescriptor = await descriptorFile.description(`uploads/${fileName}`);
+    imgDescriptor = await imgDescriptor.descriptor;
+    genre = imgDescriptor.genre;
+    searchResult = search(imgDescriptor);
+    if(searchResult == 0){
+      console.log("Personne inconnue");
+    }else{
+      console.log(`ID trouvé: ${searchResult}`);
+    }
 
-  resultat = compareFace.compareImageJSON(`uploads/${fileName}`,'./public/faces/test/howard.json');
-  console.log(resultat);
-  res.send(apiResponse({
-    message: fileName,
-    image
-  }));
+    res.send(apiResponse({
+      message: fileName,
+      image
+    }));
+  }
+  desc();
+
 });
 
 function apiResponse(results) {
