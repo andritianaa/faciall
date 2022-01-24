@@ -7,7 +7,7 @@ async function search(imgDescriptor) {
     let found = false;
     max = {
         "id": null,
-        "distance": 1
+        "distance": 0.45
     };
     let id = 1;
     let referencePath;
