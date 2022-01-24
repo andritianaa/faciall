@@ -4,7 +4,6 @@ const path = require('path');
 const canvas = require("canvas");
 const multer = require('multer');
 const express = require('express');
-const faceapi = require("face-api.js");
 const bodyParser = require('body-parser');
 const search = require('./facial_recognition/search.js');
 const compareFace = require('./facial_recognition/compareFace.js');
