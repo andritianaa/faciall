@@ -41,7 +41,7 @@ app.post('/', upload.single('image'), (req, res) => {
   async function desc() {
     imgDescriptor = await descriptorFile.description(`uploads/${fileName}`);
     imgDescriptor = await imgDescriptor.descriptor;
-    genre = imgDescriptor.genre;
+    
     searchResult = search(imgDescriptor);
     if(searchResult == 0){
       console.log("Personne inconnue");

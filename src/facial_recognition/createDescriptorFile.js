@@ -87,6 +87,6 @@ async function description(pathSrc) {
   return imgDescriptor;
 }
 // createDescriptorFile('./public/faces/test/howard.jpg','./public/faces/test/howard.json')
-description('./public/faces/test/howard.jpg');
+//description('./public/faces/test/howard.jpg');
 module.exports.createDescriptorFile = createDescriptorFile;
 module.exports.description = description;
