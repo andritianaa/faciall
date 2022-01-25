@@ -1,41 +1,75 @@
 const fs = require('fs');
 const faceapi = require("face-api.js");
 const compareFace = require('./compareFace.js');
-const { max } = require('@tensorflow/tfjs-core');
+const { NONAME } = require('dns');
 
 async function search(imgDescriptor) {
-    let found = false;
-    max = {
-        "id": null,
-        "distance": 0.45
-    };
-    let id = 1;
+
+    found = false;
+    let correspondance_list = [];
+    let id = 0;
+    let i = 1;
     let referencePath;
     genre = imgDescriptor.genre;
-    while (!found) {
-        for (let i = 1; i <= 3; i++) {
-            referencePath = `./public/faces/${genre}s/${id}/${i}.json`
+    const personNumber = fs.readdirSync(`./public/faces/${genre}s`).length;
+
+    while (i <= 2 && found == false) {
+
+        for (let j = 1; j <= personNumber; j++) {
+
+            id++;
+            referencePath = `./public/faces/${genre}s/${id}/${i}.json`;
             let compareResult = compareFace.compareObjectJSON(imgDescriptor, referencePath);
-            if (compareResult < max.distance){
-                max = {
-                    "id":id,
-                    "distance": compareResult
+
+            if (compareResult < 0.45) {
+                found = true;
+                correspondance_list.push({
+                    id: id
+                });
+                if (compareResult < 0.3) {
+                    return {
+                        id: id,
+                        difference: compareResult
+                    };
                 }
             }
-            if (compareResult < 0.3) {
-                found = true;
-                break;
-            }
-            
         }
-        id++;
-        //trouver nombre de dossier dans un dossier avec node.js
+
+        if (correspondance_list.length == 1) {
+            return {
+                id: id,
+                difference: compareResult
+            };
+        } else if (correspondance_list.length == 0 && i == 2) {
+            return {
+                id: 0,
+                difference:1
+            }
+        }else if (correspondance_list.length == 0){
+            i++;
+        }else {
+            max = {
+                id: null,
+                difference: 0.45
+            };
+            tmp = i++;
+            array.forEach((el, index, correspondance_list) => {
+                referencePath = `./public/faces/${genre}s/${el.id}/${tmp}.json`;
+                let compareResult = compareFace.compareObjectJSON(imgDescriptor, referencePath);
+                if (compareResult < max.difference) {
+                    max = {
+                        id: el.id,
+                        difference: compareResult
+                    }
+                }
+            });
+            return max;
+        }
+
     }
-    //ity id ity tadiavina ary amin'ny database
-    if(found){
-        return max;
-    }else{
-        return 0;
-    }
+
+    //trouver nombre de dossier dans un dossier avec node.js
+
+    return 404;
 }
 module.exports.search = search;
