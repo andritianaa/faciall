@@ -6,14 +6,21 @@ async function importAll(nbrImport, isMale) {
     } else {
         genre = "females";
     }
-    //id tsy misy voalohany voalohany 
-    const id = (fs.readdirSync(`./public/faces/${genre}`).length) + 1;
-    for (let i = 1; i <= nbrPerson; i++) {
-        fs.mkdir(`./public/faces/${genre}/${id}`);
+
+
+    for (let i = 1; i <= nbrImport; i++) {
+        //id tsy misy voalohany voalohany 
+        let id = (fs.readdirSync(`./public/faces/${genre}`).length) + 1;
+        fs.mkdir(`./public/faces/${genre}/${id}`, (err) => {
+            if (err) throw err;
+        });
         for (let j = 1; j <= 3; j++) {
-            await create.createDescriptorFile(`./temp/${genre}/${i}/${j}.jpg`, `./public/faces/${genre}/1/${j}.json`);
+            fs.copyFile(`./temp/${genre}/${i}/0.jpg`, `./public/faces/${genre}/${id}/photo.jpg`, (err) => {
+                if (err) throw err;
+            });
+            await create.createDescriptorFile(`./temp/${genre}/${i}/${j}.jpg`, `./public/faces/${genre}/${id}/${j}.json`);
         }
-        id++;
+
     }
 }
 

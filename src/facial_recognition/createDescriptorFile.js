@@ -83,7 +83,6 @@ async function description(pathSrc) {
   console.log(`Description fini en ${descEnd - descStart}ms`);
   //si face api ne trouve pas de visage
   if (imgDescriptor) console.log("found face in imgDescriptor");
-  console.log(imgDescriptor.gender);
   return imgDescriptor;
 }
 // createDescriptorFile('./public/faces/test/howard.jpg','./public/faces/test/howard.json')
