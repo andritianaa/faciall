@@ -1,6 +1,7 @@
 const fs = require('fs');
 const faceapi = require("face-api.js");
 const compareFace = require('./compareFace.js');
+const descriptorFile = require('./createDescriptorFile.js');
 
 async function search(imgDescriptor) {
 
@@ -28,23 +29,28 @@ async function search(imgDescriptor) {
                 correspondance_list.push({
                     id: id
                 });
-                //raha infreiur an'ny 0.3 ny distance azo avy amin'ny comparaison dia hita avy hatrany ilay olona
+                //raha infreieur an'ny 0.3 ny distance azo avy amin'ny comparaison dia hita avy hatrany ilay olona
                 if (compareResult < 0.3) {
-                    return {
+                    max = {
                         id: id,
                         difference: compareResult
                     };
+                    console.log(max);
+                    return max;
                 }
             }
         }
         //raha iray fotsiny ny ao anaty liste ana correspondace, dia izy avy hatrany ilay tadiavina
         if (correspondance_list.length == 1) {
-            return {
+            max ={
                 id: id,
                 difference: compareResult
-            };
+            }
+            console.log(max);
+            return max;
             //raha vide ny liste sady efa ireo sary faharoa no nojerena dia tsy mbola fantatra ilay olona
         } else if (correspondance_list.length == 0 && i == 2) {
+            console.log("not found");
             return {
                 id: 0,
                 difference: 1
@@ -71,11 +77,14 @@ async function search(imgDescriptor) {
                         id: el.id,
                         difference: compareResult
                     }
+                    console.log(max);
                 }
             });
             return max;
         }
     }
+    console.log("not found");
     return 404;
 }
+
 module.exports.search = search;
