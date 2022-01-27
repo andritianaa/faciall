@@ -24,5 +24,5 @@ async function importAll(nbrImport, isMale) {
     }
 }
 
-
+importAll(6,false);
 //<>
