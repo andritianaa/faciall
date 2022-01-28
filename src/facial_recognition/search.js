@@ -1,38 +1,43 @@
 const fs = require('fs');
 const faceapi = require("face-api.js");
 const compareFace = require('./compareFace.js');
-const descriptorFile = require('./createDescriptorFile.js');
+const createDescriptorFile = require('./createDescriptorFile.js');
 
 async function search(imgDescriptor) {
 
     found = false;
+    let distanceResult;
     let correspondance_list = [];
     let id = 0;
     let i = 1;
     let referencePath;
-    genre = imgDescriptor.genre;
+    genre = imgDescriptor.gender;
     const personNumber = fs.readdirSync(`./public/faces/${genre}s`).length;
     // asesy ny sary anakiroa
     while (i <= 2 && found == false) {
         //tetezina ny olona tsirairay / genre
         for (let j = 1; j <= personNumber; j++) {
             //manomboka 1 ny id, id an'olona iray ihany ny anarana dossier misy azy anaty dir
-            id++;
-            referencePath = `./public/faces/${genre}s/${id}/${i}.json`;
+            j
+            referencePath = `./public/faces/${genre}s/${j}/${i}.json`;
             //comparena ilay imgDescriptor (ilay descriptor an'olona tadiavina)
             let compareResult = compareFace.compareObjectJSON(imgDescriptor, referencePath);
+            compareResult = (await compareResult).distance;
             /**raha kely noho ny treshold ny resultat an'ny comparaison dia marquena true ny found satria misy tarehy izany
              * atsofoka anaty liste ana correspondance ny id an'izay inferieur an'ny treshold
              */
+            console.log(compareResult);
             if (compareResult < 0.45) {
                 found = true;
+                console.log("ok");
                 correspondance_list.push({
-                    id: id
+                    id: j
                 });
-                //raha infreieur an'ny 0.3 ny distance azo avy amin'ny comparaison dia hita avy hatrany ilay olona
+                console.log(correspondance_list);
+                //raha inferieur an'ny 0.3 ny distance azo avy amin'ny comparaison dia hita avy hatrany ilay olona
                 if (compareResult < 0.3) {
                     max = {
-                        id: id,
+                        id: j,
                         difference: compareResult
                     };
                     console.log(max);
@@ -40,11 +45,11 @@ async function search(imgDescriptor) {
                 }
             }
         }
+        console.log(correspondance_list);
         //raha iray fotsiny ny ao anaty liste ana correspondace, dia izy avy hatrany ilay tadiavina
         if (correspondance_list.length == 1) {
-            max ={
-                id: id,
-                difference: compareResult
+            max = {
+                id: correspondance_list[0]
             }
             console.log(max);
             return max;
@@ -52,12 +57,12 @@ async function search(imgDescriptor) {
         } else if (correspondance_list.length == 0 && i == 2) {
             console.log("not found");
             return {
-                id: 0,
-                difference: 1
+                id: 0
             }
         } else if (correspondance_list.length == 0) {
             //raha vide ilay liste de mifindra ao amin'ny sary faharoa
             i = 2;
+            j = 1;
         } else {
             //rahamihoatra ny 1 ny anaty liste
             max = {
@@ -66,16 +71,16 @@ async function search(imgDescriptor) {
             };
             //ilay liste ana sary manaraka no tohizana anaovana comparaison
             tmp = i++;
-            array.forEach((el, index, correspondance_list) => {
+            correspondance_list.forEach((el, index=0,correspondance_list) => {
                 //chemin makany amin'ny descriptor
                 referencePath = `./public/faces/${genre}s/${el.id}/${tmp}.json`;
                 //comparaison
-                let compareResult = compareFace.compareObjectJSON(imgDescriptor, referencePath);
+                compareResult = compareFace.compareObjectJSON(imgDescriptor, referencePath);
+                
                 //izay manana distance manakaiky an'ny 0 indrindra no izy
-                if (compareResult < max.difference) {
+                if (compareResult.distance < max.difference || max.id==null) {
                     max = {
-                        id: el.id,
-                        difference: compareResult
+                        id: el.id
                     }
                     console.log(max);
                 }
@@ -87,4 +92,19 @@ async function search(imgDescriptor) {
     return 404;
 }
 
+
+const desc = async (fileName) => {
+    console.log("descripting");
+    imgDescriptor = await createDescriptorFile.description(`uploads/${fileName}`);
+    console.log("descripted");
+    console.log("in search");
+    searchResult = await search(imgDescriptor);
+    console.log(searchResult);
+    if (searchResult == 0) {
+        console.log("Personne inconnue");
+    } else {
+        console.log(`ID trouvé: ${searchResult.id}`);
+    }
+}
+desc(`m.jpg`);
 module.exports.search = search;

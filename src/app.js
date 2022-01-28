@@ -38,7 +38,7 @@ var upload = multer({
 //return l'id de la personne trouvé
 app.post('/', upload.single('image'), (req, res) => {
   var image = req.image;
-  async function desc() {
+   const desc = async () => {
     imgDescriptor = await descriptorFile.description(`uploads/${fileName}`);
     imgDescriptor = await imgDescriptor.descriptor;
     
@@ -54,9 +54,10 @@ app.post('/', upload.single('image'), (req, res) => {
       image
     }));
   }
-  desc();
+  
 
 });
+desc();
 
 function apiResponse(results) {
   return JSON.stringify({
