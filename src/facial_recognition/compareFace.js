@@ -148,14 +148,14 @@ async function compareObjectJSON(objectJS, pathReference) {
     
 
     //resultats
-    if (bestMatch._distance < 0.45) {
-        console.log("\nResults : Olona mitovy");
-    } else if (bestMatch.distance > 0.45) {
-        console.log("\nResults : Olona samihafa ");
-    } else {
-        console.log("Sary mitovy");
-    }
-    console.log(`Distance euclidienne : ${bestMatch._distance}`);
+    // if (bestMatch._distance < 0.45) {
+        // console.log("\nResults : Olona mitovy");
+    // } else if (bestMatch.distance > 0.45) {
+        // console.log("\nResults : Olona samihafa ");
+    // } else {
+        // console.log("Sary mitovy");
+    // }
+    // console.log(`Distance euclidienne : ${bestMatch._distance}`);
     return bestMatch;
 }
 
