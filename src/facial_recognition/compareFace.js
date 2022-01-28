@@ -69,7 +69,7 @@ async function compareImageJSON(pathFaceToSearch, pathReference) {
      * mampiasa min max izany
      */
     const bestMatch = faceMatcher.findBestMatch(reference);
-    console.log("\nMatching done ");
+    
 
     //resultats
     if (bestMatch._distance < 0.45) {
@@ -111,7 +111,7 @@ async function compareJSONJSON(pathFaceToSearch, pathReference) {
      * raha misy 0.25 kosa nefa tonga dia mijanona ny recherche fa efa tena assuré hoe olona ray ihany ny amin'ny sary anakiroa
      */
     const bestMatch = faceMatcher.findBestMatch(reference);
-    console.log("\nMatching done ");
+    
 
     //resultats
     if (bestMatch._distance < 0.45) {
@@ -145,7 +145,7 @@ async function compareObjectJSON(objectJS, pathReference) {
      * raha misy 0.25 kosa nefa tonga dia mijanona ny recherche fa efa tena assuré hoe olona ray ihany ny amin'ny sary anakiroa
      */
     const bestMatch = faceMatcher.findBestMatch(reference);
-    console.log("\nMatching done ");
+    
 
     //resultats
     if (bestMatch._distance < 0.45) {
@@ -156,7 +156,7 @@ async function compareObjectJSON(objectJS, pathReference) {
         console.log("Sary mitovy");
     }
     console.log(`Distance euclidienne : ${bestMatch._distance}`);
-    return bestMatch._distance;
+    return bestMatch;
 }
 
 
