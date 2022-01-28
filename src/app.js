@@ -38,26 +38,14 @@ var upload = multer({
 //return l'id de la personne trouvé
 app.post('/', upload.single('image'), (req, res) => {
   var image = req.image;
-   const desc = async () => {
-    imgDescriptor = await descriptorFile.description(`uploads/${fileName}`);
-    imgDescriptor = await imgDescriptor.descriptor;
-    
-    searchResult = search(imgDescriptor);
-    if(searchResult == 0){
-      console.log("Personne inconnue");
-    }else{
-      console.log(`ID trouvé: ${searchResult}`);
-    }
-
+   async (() => {
+    searchResult = await search(fileName);
     res.send(apiResponse({
       message: fileName,
       image
     }));
-  }
-  
-
+  })();
 });
-desc();
 
 function apiResponse(results) {
   return JSON.stringify({
