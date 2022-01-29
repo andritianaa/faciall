@@ -104,15 +104,14 @@ async function searchProcess(imgDescriptor) {
 
 
 const search = async (fileName) => {
-    console.log("descripting");
-
+    
+    console.log("Start descripting");
     let start = performance.now();
     imgDescriptor = await createDescriptorFile.description(`uploads/${fileName}`);
     let end = performance.now();
     let execTime = end - start;
     console.log(`Done in ${execTime} ms\n\n`);
-    console.log("descripted");
-    console.log("in search");
+    
     start = performance.now();
     searchResult = await searchProcess(imgDescriptor);
     end = performance.now();
@@ -127,5 +126,5 @@ const search = async (fileName) => {
     }
     console.log(`Done in ${execTime} ms`);
 }
-search(`unk.jpg`);
+//search(`unk.jpg`);
 module.exports.search = search;

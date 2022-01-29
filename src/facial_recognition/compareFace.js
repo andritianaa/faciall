@@ -18,7 +18,6 @@ faceapi.env.monkeyPatch({
 //declaration asynchrone de la reconnaissance faciale
 async function compareImageJSON(pathFaceToSearch, pathReference) {
     //chargement des models
-    console.log("Loading models");
     await faceapi.nets.faceRecognitionNet.loadFromDisk('src/facial_recognition/models');
     await faceapi.nets.faceLandmark68Net.loadFromDisk('src/facial_recognition/models');
     await faceapi.nets.ssdMobilenetv1.loadFromDisk('src/facial_recognition/models');
@@ -29,9 +28,7 @@ async function compareImageJSON(pathFaceToSearch, pathReference) {
      * face api mampiasa htmlImageElement na htmlVideoElement de ny fichier image tsotra atsofoka
      * anaty canvas mba holasa htmlImageElement
      */
-    console.log("Loading image");
     newImage = await canvas.loadImage(pathFaceToSearch);
-    console.log("Image loaded\n");
 
     /**
      * calculena ny description faciale an'ireo image
@@ -54,7 +51,6 @@ async function compareImageJSON(pathFaceToSearch, pathReference) {
 
     //amoronana faceMatcher ilay tarehy itadiavana ny tompony
     const faceMatcher = new faceapi.FaceMatcher(faceToSearch);
-    console.log("Facematcher for faceToSearch created");
 
     /**
      * tadiavina amin'ny alalan'ny methode findBestMatch() ananan'ny objet faceMatcher
@@ -83,7 +79,6 @@ async function compareImageJSON(pathFaceToSearch, pathReference) {
     return bestMatch._distance;
 }
 async function compareJSONJSON(pathFaceToSearch, pathReference) {
-
 
     let faceToSearch = fs.readFileSync(pathFaceToSearch, (err, data) => {
         if (err) throw err;
@@ -162,15 +157,12 @@ async function compareObjectJSON(objectJS, pathReference) {
 
 async function searchPerson(pathFaceToSearch) {
     //chargement des models
-    console.log("Loading models");
     await faceapi.nets.faceRecognitionNet.loadFromDisk('src/facial_recognition/models');
     await faceapi.nets.faceLandmark68Net.loadFromDisk('src/facial_recognition/models');
     await faceapi.nets.ssdMobilenetv1.loadFromDisk('src/facial_recognition/models');
     console.log("Models loaded");
     //models chargés
-    console.log("Loading image");
     newImage = await canvas.loadImage(pathFaceToSearch);
-    console.log("Image loaded\n");
 
     console.log("Descripting faceToSearch");
     const faceToSearch = await faceapi.detectSingleFace(newImage).withFaceLandmarks().withFaceDescriptor();
