@@ -18,7 +18,7 @@ async function searchProcess(imgDescriptor) {
         //tetezina ny olona tsirairay / genre
         for (let j = 1; j <= personNumber; j++) {
             //manomboka 1 ny id, id an'olona iray ihany ny anarana dossier misy azy anaty dir
-            j
+            
             referencePath = `./public/faces/${genre}s/${j}/${i}.json`;
             //comparena ilay imgDescriptor (ilay descriptor an'olona tadiavina)
             let compareResult = compareFace.compareObjectJSON(imgDescriptor, referencePath);
