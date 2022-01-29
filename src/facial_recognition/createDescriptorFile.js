@@ -27,8 +27,7 @@ async function createDescriptorFile(pathSrc, pathDest) {
   //create imgDescriptor object
   //io imgDescriptor io no atsofoka anaty base de donnée
   const imgDescriptor = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor().withAgeAndGender();
-
-
+  
   //creation fichier json
   fs.writeFile(pathDest, JSON.stringify(imgDescriptor.descriptor), () => console.log("file writed"));
 }

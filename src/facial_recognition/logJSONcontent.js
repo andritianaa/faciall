@@ -1,5 +1,4 @@
 const fs = require('fs');
-const { parse } = require('path');
 
 let filePath = './public/faces/test/howard.json';
 async function logJSON(filePath){
