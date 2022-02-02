@@ -38,13 +38,7 @@ var upload = multer({
 //return l'id de la personne trouvé
 app.post('/', upload.single('image'), (req, res) => {
   var image = req.image;
-   async (() => {
-    searchResult = await search(fileName);
-    res.send(apiResponse({
-      message: fileName,
-      image
-    }));
-  })();
+   
 });
 
 function apiResponse(results) {
