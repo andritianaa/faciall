@@ -52,9 +52,6 @@ async function searchProcess(imgDescriptor) {
                 console.log(`Not ${genre} ${j} ${i}`);
             }
         }
-        if (found == false) {
-            return 404;
-        }
         console.log(correspondance_list);
         //raha iray fotsiny ny ao anaty liste ana correspondace, dia izy avy hatrany ilay tadiavina
         if (correspondance_list.length == 1) {
@@ -126,5 +123,5 @@ const search = async (fileName) => {
     }
     console.log(`Done in ${execTime} ms`);
 }
-//search(`unk.jpg`);
+search(`oliva.jpg`);
 module.exports.search = search;
