@@ -123,5 +123,5 @@ const search = async (fileName) => {
     }
     console.log(`Done in ${execTime} ms`);
 }
-search(`oliva.jpg`);
+search(`hasina.jpg`);
 module.exports.search = search;
