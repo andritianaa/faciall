@@ -36,17 +36,16 @@ async function searchProcess(imgDescriptor) {
             if (compareResult < 0.45) {
                 found = true;
                 correspondance_list.push({
-                    id: j
+                    id: j,
+                    difference: compareResult
                 });
                 console.log(`Correspondance ${genre} ${j} ${i}`);
                 //raha inferieur an'ny 0.3 ny distance azo avy amin'ny comparaison dia hita avy hatrany ilay olona
                 if (compareResult < 0.3) {
-                    max = {
+                    return {
                         id: j,
                         difference: compareResult
                     };
-                    console.log(max);
-                    return max;
                 }
             } else {
                 console.log(`Not ${genre} ${j} ${i}`);
@@ -55,17 +54,12 @@ async function searchProcess(imgDescriptor) {
         console.log(correspondance_list);
         //raha iray fotsiny ny ao anaty liste ana correspondace, dia izy avy hatrany ilay tadiavina
         if (correspondance_list.length == 1) {
-            max = {
-                id: correspondance_list[0]
-            }
-            console.log(max);
-            return max;
+            console.log("un seul");
+            return correspondance_list[0];
             //raha vide ny liste sady efa ireo sary faharoa no nojerena dia tsy mbola fantatra ilay olona
         } else if (correspondance_list.length == 0 && i == 2) {
             console.log("not found");
-            return {
-                id: 0
-            }
+            return "not found";
         } else if (correspondance_list.length == 0) {
             //raha vide ilay liste de mifindra ao amin'ny sary faharoa
             i = 2;
@@ -87,41 +81,32 @@ async function searchProcess(imgDescriptor) {
                 //izay manana distance manakaiky an'ny 0 indrindra no izy
                 if (compareResult.distance < max.difference || max.id == null) {
                     max = {
-                        id: el.id
+                        id: el.id,
+                        distance : compareResult.distance
                     }
-                    console.log(max);
                 }
             });
             return max;
         }
     }
     console.log("not found");
-    return 404;
+    return "not found";
 }
 
 
 const search = async (fileName) => {
     
     console.log("Start descripting");
-    let start = performance.now();
     imgDescriptor = await createDescriptorFile.description(`uploads/${fileName}`);
-    let end = performance.now();
-    let execTime = end - start;
-    console.log(`Done in ${execTime} ms\n\n`);
     
-    start = performance.now();
     searchResult = await searchProcess(imgDescriptor);
-    end = performance.now();
-    execTime = end - start;
     console.log(searchResult);
-    if (searchResult == 404) {
-        console.log("Personne inconnue");
-    } else if (searchResult.id.id == undefined) {
+    if (searchResult === "not found") {
         console.log("Personne inconnue");
     } else {
-        console.log(`ID trouvé: ${searchResult.id.id}`);
+        console.log(`ID trouvé: ${searchResult.id}`);
     }
-    console.log(`Done in ${execTime} ms`);
+    return searchResult;
 }
 //search(`hasina.jpg`);
 module.exports.search = search;

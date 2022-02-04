@@ -1,13 +1,11 @@
 const fs = require('fs');
 const path = require('path');
-//canvas ampiasaina toy ny canvas amin'ny html fa anaty node
-const canvas = require("canvas");
 const multer = require('multer');
 const express = require('express');
 const bodyParser = require('body-parser');
-const search = require('./facial_recognition/search.js');
-const compareFace = require('./facial_recognition/compareFace.js');
-const descriptorFile = require('./facial_recognition/createDescriptorFile.js');
+const { search } = require('./facial_recognition/search');
+const { start } = require('repl');
+const performance = require('perf_hooks');
 
 
 //init express
@@ -36,9 +34,16 @@ var upload = multer({
 
 //post image à rechercher identité
 //return l'id de la personne trouvé
-app.post('/', upload.single('image'), (req, res) => {
+ app.post('/', upload.single('image'), async (req, res) => {
   var image = req.image;
-
+  testStart = performance.now;
+  results = await search(`${fileName}`);
+  testEnd = performance.now;
+  perfTime = testEnd - testStart;
+  console.log(`${perfTime} ms`);
+  console.log(results);
+  
+  res.send(apiResponse(results));
 });
 
 function apiResponse(results) {
