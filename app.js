@@ -3,10 +3,8 @@ const path = require('path');
 const multer = require('multer');
 const express = require('express');
 const bodyParser = require('body-parser');
-const { search } = require('./facial_recognition/search');
-const { start } = require('repl');
-const performance = require('perf_hooks');
 
+require('./src/models/dbConfig');
 
 //init express
 const app = express();
@@ -14,7 +12,12 @@ const port = process.env.PORT || 3000;
 const basePath = path.join(__dirname, '../public');
 app.use(express.static(basePath));
 
+//routes
+
 // parse application/json
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use(bodyParser.json());
 
 // image upload code using multer
@@ -32,27 +35,7 @@ var upload = multer({
   storage: storage
 });
 
-//post image à rechercher identité
-//return l'id de la personne trouvé
- app.post('/', upload.single('image'), async (req, res) => {
-  var image = req.image;
-  testStart = performance.now;
-  results = await search(`${fileName}`);
-  testEnd = performance.now;
-  perfTime = testEnd - testStart;
-  console.log(`${perfTime} ms`);
-  console.log(results);
-  
-  res.send(apiResponse(results));
-});
 
-function apiResponse(results) {
-  return JSON.stringify({
-    "status": 200,
-    "error": null,
-    "response": results
-  });
-}
 
 // server listen 
 app.listen(port, () => {
