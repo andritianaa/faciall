@@ -1,9 +1,15 @@
-const express = require('express');
-app = express();
+var Person = {
+  nom: "Andritiana",
+  prenom:"Steve",
+  age:20,
+  incAge:()=>{
+    this.age=age++;
+  },
+  getAge: ()=>{
+    console.log(this.age);
+    return this.age;
+  }
+  
+}
+console.log(Person.getAge());
 //<>
-
-// server listen 
-port = 3000;
-app.listen(port, () => {
-  console.log("server started on port " + port);
-})
