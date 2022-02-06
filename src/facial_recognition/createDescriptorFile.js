@@ -60,7 +60,7 @@ async function description(pathSrc) {
   console.log(imgDescriptor.gender);
   return imgDescriptor;
 }
-// createDescriptorFile('./public/persons/test/howard.jpg','./public/persons/test/howard.json')
-//description('./public/persons/test/howard.jpg');
+// createDescriptorFile('./static/persons/test/howard.jpg','./static/persons/test/howard.json')
+//description('./static/persons/test/howard.jpg');
 module.exports.createDescriptorFile = createDescriptorFile;
 module.exports.description = description;
