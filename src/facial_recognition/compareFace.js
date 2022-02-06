@@ -169,7 +169,7 @@ async function searchPerson(pathFaceToSearch) {
     if (faceToSearch) console.log("faceToSearch has face");
     else console.log("No face found in faceToSearch");
 }
-//compareImageJSON('public/faces/test/howard.jpg','./public/faces/test/howard.json');
+//compareImageJSON('public/persons/test/howard.jpg','./public/persons/test/howard.json');
 //<>
 
 module.exports.compareImageJSON = compareImageJSON;

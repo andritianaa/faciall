@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-let filePath = './public/faces/test/howard.json';
+let filePath = './public/persons/test/howard.json';
 async function logJSON(filePath){
     let file = fs.readFileSync(filePath, (err, data) => {
         if (err) throw err;

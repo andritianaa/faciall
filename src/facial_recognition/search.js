@@ -12,14 +12,14 @@ async function searchProcess(imgDescriptor) {
     let i = 1;
     let referencePath;
     genre = imgDescriptor.gender;
-    const personNumber = fs.readdirSync(`./public/faces/${genre}s`).length;
+    const personNumber = fs.readdirSync(`./public/persons/${genre}s`).length;
     // asesy ny sary anakiroa
     while (i <= 2 && found == false) {
         //tetezina ny olona tsirairay / genre
         for (let j = 1; j <= personNumber; j++) {
             //manomboka 1 ny id, id an'olona iray ihany ny anarana dossier misy azy anaty dir
             
-            referencePath = `./public/faces/${genre}s/${j}/${i}.json`;
+            referencePath = `./public/persons/${genre}s/${j}/${i}.json`;
             //comparena ilay imgDescriptor (ilay descriptor an'olona tadiavina)
             let compareResult = compareFace.compareObjectJSON(imgDescriptor, referencePath);
             compareResult = (await compareResult).distance;
@@ -74,7 +74,7 @@ async function searchProcess(imgDescriptor) {
             tmp = i++;
             correspondance_list.forEach((el, index = 0, correspondance_list) => {
                 //chemin makany amin'ny descriptor
-                referencePath = `./public/faces/${genre}s/${el.id}/${tmp}.json`;
+                referencePath = `./public/persons/${genre}s/${el.id}/${tmp}.json`;
                 //comparaison
                 compareResult = compareFace.compareObjectJSON(imgDescriptor, referencePath);
 
