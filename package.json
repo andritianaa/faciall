@@ -6,7 +6,6 @@
   "scripts": {
     "start": "node ./app.js",
     "dev": "nodemon ./server.js -L -e js,html,css",
-    "learn": "nodemon ./index.js -L -e js,html,css",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
