@@ -1,18 +1,14 @@
 const express = require("express");
+const mongoose = require('mongoose');
 const session = require('express-session');
-const {
-  append
-} = require("express/lib/response");
-require('./src/models/persons.models')
+const personsRoutes = require('./src/routes/persons.routes')
+
+require('./src/models/persons.models');
 
 //instatiate server
 const server = express();
 
-//routes
-server.use('/', (req, res, next) => {
-  res.header('Content-Type', 'text/html');
-  res.status(200).send('<h1>connected to server</h1>');
-});
+
 
 //middleware
 server.use(express.urlencoded({
@@ -27,13 +23,35 @@ server.use(session({
   resave: false
 }));
 
-server.use((req, res) => {
+server.use((req, res,next) => {
   res.locals.message = req.session.message;
   delete req.session.message;
   next();
+});
+
+//connect to database
+mongoose.connect('mongodb://localhost:27017/faciall',{
+    useNewUrlParser:true,
+    useUnifiedTopology:true
+});
+
+db = mongoose.connection;
+db.on('error',(err)=>{
+    console.log(err);
+})
+db.once('open',()=>{
+    console.log('Database connected');
 })
 
 
+//initiate ejs
+server.set('view engine','ejs');
+
+//route prefix
+server.use('',personsRoutes);
+
+//definition fichier static
+server.use(express.static('static'));
 
 
 //launch server

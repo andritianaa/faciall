@@ -1,0 +1,61 @@
+<%- include('layout/header')  %>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 mx-auto mt-4">
+            <div class="card shadow">
+                <div class="card-header bg-primary justify-content-center">
+                    <h3 class="text-light">Ajouter une personne</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form action="/add" id="add-form" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="firstName">Prénom</label>
+                            <input type="text" name="firstName" class="form-control form-control-lg"
+                            placeholder="Entrer prénom" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="lastName">Nom</label>
+                            <input type="text" name="lastName" class="form-control form-control-lg"
+                            placeholder="Entrer nom" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="birth">Date de naissance</label>
+                            <input type="date" name="birth" class="form-control form-control-lg"
+                            placeholder="Date de naissance" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone">Téléphone</label>
+                            <input type="tel" name="phone" class="form-control form-control-lg"
+                            placeholder="Entrer numéro téléphone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="adress">Adresse</label>
+                            <input type="text" name="adress" class="form-control form-control-lg"
+                            placeholder="Entrer adresse">
+                        </div>
+                        <div class="mb-2">
+                            <label for="image">Photo d'identité</label>
+                            <input type="file" name="image" class="form-control form-control-lg" required>
+                        </div>
+                        <div class="mb-2">
+                            <label for="descriptor1">Descriptor 1</label>
+                            <input type="file" name="descriptor1" class="form-control form-control-lg" required>
+                        </div>
+                        <div class="mb-2">
+                            <label for="descriptor2">Descriptor 2</label>
+                            <input type="file" name="descriptor2" class="form-control form-control-lg"required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descriptor3">Descriptor 3</label>
+                            <input type="file" name="descriptor3" class="form-control form-control-lg"required>
+                        </div>
+                        <div class="mb-3 d-grid">
+                            <input type="submit" value="Ajouter" name="submit" class="btn btn-lg btn-primary">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('layout/footer')  %>

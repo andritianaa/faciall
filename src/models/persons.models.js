@@ -1,14 +1,47 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost:27017/faciall',{
-    useNewUrlParser:true,
-    useUnifiedTopology:true
+const personSchema = new mongoose.Schema({
+    firstName:{
+        type:String,
+        required:true
+    },
+    lastName:{
+        type:String,
+        required:true
+    },
+    birth:{
+        type:Date,
+        require:true
+    },
+    created:{
+        type:Date,
+        require:true,
+        default:Date.now
+    },
+    phone:{
+        type:String,
+        require:false
+    },
+    image : {
+        type:String,
+        require:true
+    },
+    descriptor1:{
+        type:String,
+        require:true
+    },
+    descriptor2:{
+        type:String,
+        require:true
+    },
+    descriptor3:{
+        type:String,
+        require:true
+    },
+    adress:{
+        type:String,
+        require:false
+    }
 });
 
-db = mongoose.connection;
-db.on('error',(err)=>{
-    console.log(err);
-})
-db.once('open',()=>{
-    console.log('Database connected');
-})
+module.exports = mongoose.model("Person", personSchema);
