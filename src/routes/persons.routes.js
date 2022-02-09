@@ -5,8 +5,12 @@ const multer = require('multer');
 
 //upload image
 let storage = multer.diskStorage({
-    destination:
-})
+    
+});
+
+let upload = multer({
+    storage:storage
+}).single('image');//upload multiple file multer
 
 router.get('/',(req,res)=>{
     res.render('index',{

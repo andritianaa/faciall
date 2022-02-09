@@ -108,5 +108,5 @@ const search = async (fileName) => {
     }
     return searchResult;
 }
-// search(`hasina.jpg`);
+search(`unk.jpg`);
 module.exports.search = search;
